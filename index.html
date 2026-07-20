@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ERP Supply Chain Timeline — International</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Barlow',sans-serif;background:#fff;color:#111}
+.hero{position:relative;height:260px;background:#1a1a1a;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#2a1a0a 0%,#1a1a1a 40%,#0a0f1a 100%)}
+.hero-sky{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(to bottom,#c0d4e8 0%,#a8c8e0 50%,transparent 100%);opacity:0.25}
+.hero-desert{position:absolute;top:40px;right:0;width:55%;height:180px;background:linear-gradient(135deg,#8b4513 0%,#cd853f 30%,#d2691e 60%,#8b4513 100%);clip-path:polygon(10% 100%,0% 60%,15% 30%,30% 10%,50% 0%,70% 15%,85% 0%,100% 20%,100% 100%);opacity:0.5}
+.road-lines{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:40px}
+.road-line{width:60px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.6) 50%,rgba(0,0,0,0.2) 100%)}
+.hero-content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 2rem}
+.hero-logo-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.logo-diamond{width:32px;height:32px;flex-shrink:0}
+.logo-text{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:#fff;letter-spacing:0.08em;text-transform:uppercase}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:900;color:#fff;letter-spacing:-0.01em;line-height:1;text-transform:uppercase}
+.hero-sub{font-size:11px;font-weight:500;color:rgba(255,255,255,0.55);letter-spacing:0.14em;text-transform:uppercase;margin-top:10px}
+.hero-rule{width:40px;height:3px;background:#cc0000;margin-top:12px;border-radius:1px}
+.wrap{padding:1.5rem 1.5rem 2rem;background:#fff}
+.legend{display:flex;gap:1.2rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#555;letter-spacing:0.04em;text-transform:uppercase}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.leg-bar{width:16px;height:3px;border-radius:1px;flex-shrink:0}
+.ss-banner{border:1.5px solid rgba(179,98,0,0.5);border-radius:3px;padding:5px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;background:rgba(179,98,0,0.07);min-width:860px}
+.ss-text{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;color:#b36200;letter-spacing:0.1em;text-transform:uppercase}
+.tl-outer{overflow-x:auto;padding-bottom:4px;scrollbar-width:thin;scrollbar-color:#ccc transparent}
+.tl-outer::-webkit-scrollbar{height:3px}
+.tl-outer::-webkit-scrollbar-thumb{background:#ccc;border-radius:2px}
+.tl{display:flex;align-items:stretch;min-width:860px;gap:0}
+.stage{display:flex;flex-direction:column;align-items:center;flex:1;position:relative}
+.conn{display:flex;align-items:center;justify-content:center;width:16px;flex-shrink:0;padding-top:76px;color:#bbb;font-size:14px;font-weight:500}
+.pins-above,.pins-below{min-height:72px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:0 2px}
+.pins-above{justify-content:flex-end;padding-bottom:5px}
+.pins-below{justify-content:flex-start;padding-top:5px}
+.pa{font-size:11px;color:#bbb;height:13px;display:flex;align-items:center}
+.rail-seg{height:44px;width:100%;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:3px;border:1.5px solid transparent;transition:filter .15s,box-shadow .15s;position:relative}
+.rail-seg:hover{filter:brightness(.92)}
+.rail-seg.active{border-color:#cc0000 !important;box-shadow:0 0 0 3px rgba(204,0,0,0.15)}
+.rl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;text-align:center;line-height:1.15;padding:0 5px;letter-spacing:0.07em;text-transform:uppercase;user-select:none}
+.s-edi{background:#e0e0e0;color:#333}
+.s-mrd{background:#d0d0d0;color:#222}
+.s-ship{background:#b8b8b8;color:#111}
+.s-erd{background:#b8b8b8;color:#111}
+.s-trans{background:#a0a0a0;color:#111}
+.s-build{background:#111;color:#fff;border-color:#333 !important}
+.s-lf{background:#cc0000;color:#fff}
+.s-whse{background:#d0d0d0;color:#222}
+.pin-btn{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;cursor:pointer;padding:2px 9px;border-radius:2px;border:1.5px solid;white-space:nowrap;transition:all .14s;background:#fff;letter-spacing:0.04em;text-transform:uppercase}
+.pin-btn:hover{transform:translateY(-1px);box-shadow:0 2px 6px rgba(0,0,0,0.12)}
+.pi{color:#cc0000;border-color:rgba(204,0,0,0.35)}
+.pi:hover,.pi.sel{background:rgba(204,0,0,0.08);border-color:#cc0000}
+.pe{color:#006633;border-color:rgba(0,102,51,0.35)}
+.pe:hover,.pe.sel{background:rgba(0,102,51,0.08);border-color:#006633}
+.hint{font-size:11px;color:#aaa;text-align:center;margin-top:8px;letter-spacing:0.04em}
+.dpanel{margin-top:1.2rem;border:1.5px solid #ddd;border-radius:4px;background:#fff;overflow:hidden}
+.dheader{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid #eee;background:#f5f5f5}
+.chip{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;padding:3px 10px;border-radius:2px;letter-spacing:0.07em;text-transform:uppercase;white-space:nowrap}
+.dhead-txt{font-size:12px;color:#555;line-height:1.55;flex:1}
+.dbody{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:9px}
+@media(max-width:600px){.dbody{grid-template-columns:1fr}}
+.pcard{border:1.5px solid #e5e5e5;border-radius:3px;padding:11px 13px;cursor:pointer;transition:all .13s;background:#f5f5f5;position:relative;overflow:hidden}
+.pcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}
+.pcard.impact::before{background:#cc0000}
+.pcard.effect::before{background:#006633}
+.pcard:hover{border-color:#ccc;background:#fff;transform:translateY(-1px);box-shadow:0 2px 10px rgba(0,0,0,0.08)}
+.pt{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px}
+.pt.impact{color:#cc0000}.pt.effect{color:#006633}
+.pn{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:#111;margin-bottom:4px;letter-spacing:0.02em}
+.pd{font-size:11px;color:#555;line-height:1.6}
+.sdiv{height:1px;background:#eee;margin:1.5rem 0}
+.gloss-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:#aaa;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.gloss-title::after{content:'';flex:1;height:1.5px;background:#eee}
+.gloss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:7px}
+.gc{border:1.5px solid #e5e5e5;border-radius:3px;padding:11px 13px;background:#f5f5f5;transition:border-color .15s,background .15s,box-shadow .15s;cursor:pointer;position:relative}
+.gc:hover{border-color:#ccc;background:#fff}
+.gc.expanded{border-color:#cc0000;background:#fff;box-shadow:0 2px 12px rgba(204,0,0,0.08)}
+.gc-header{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.gn{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px;letter-spacing:0.02em}
+.gbadge{font-family:'Barlow Condensed',sans-serif;font-size:8px;padding:1px 5px;border-radius:2px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase}
+.gc-chevron{font-size:10px;color:#aaa;transition:transform .25s;flex-shrink:0;margin-top:-2px;line-height:1}
+.gc.expanded .gc-chevron{transform:rotate(180deg);color:#cc0000}
+.gd{font-size:11px;color:#555;line-height:1.55}
+.gc-extra{overflow:hidden;max-height:0;transition:max-height .35s ease, opacity .3s ease;opacity:0}
+.gc.expanded .gc-extra{max-height:400px;opacity:1}
+.g-divider{height:1px;background:#e5e5e5;margin:9px 0}
+.g-section-title{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:5px}
+.g-pros .g-section-title{color:#006633}
+.g-cons .g-section-title{color:#cc0000}
+.g-owner .g-section-title{color:#555}
+.g-list{list-style:none;display:flex;flex-direction:column;gap:3px}
+.g-list li{font-size:10.5px;line-height:1.45;display:flex;gap:5px;align-items:flex-start}
+.g-list li::before{flex-shrink:0;font-size:9px;margin-top:1px}
+.g-pros .g-list li{color:#1a4a2a}.g-pros .g-list li::before{content:'✓';color:#006633}
+.g-cons .g-list li{color:#4a1a1a}.g-cons .g-list li::before{content:'✕';color:#cc0000}
+.g-owner-val{font-size:11px;color:#333;font-weight:600;display:flex;align-items:center;gap:5px}
+.g-owner-val::before{content:'◆';font-size:8px;color:#cc0000}
+
+/* ── TL TRANSIT MAP ── */
+.map-sec{margin-top:1.5rem}
+.map-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:12px}
+.map-intro{font-size:12px;color:#555;line-height:1.6;max-width:620px}
+.map-intro b{color:#111;font-weight:600}
+.map-legend{display:flex;align-items:center;gap:0;flex-shrink:0}
+.ml-item{display:flex;flex-direction:column;align-items:center;gap:3px}
+.ml-sw{width:44px;height:11px}
+.ml-lb{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;color:#777;letter-spacing:.06em}
+.map-wrap{border:1.5px solid #e5e5e5;border-radius:4px;background:#fafafa;padding:6px;position:relative}
+.map-svg{width:100%;height:auto;display:block}
+.st-dot{cursor:pointer;transition:r .12s,stroke-width .12s}
+.st-dot:hover{stroke:#111;stroke-width:2.5}
+.st-dot.sel{stroke:#111;stroke-width:2.5}
+.st-lb{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;fill:#fff;pointer-events:none;text-anchor:middle;dominant-baseline:central}
+.hub-ring{fill:none;stroke:#cc0000;stroke-width:2;opacity:.35}
+.hub-lb{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;fill:#cc0000;letter-spacing:.08em;text-anchor:middle}
+.map-tip{position:absolute;pointer-events:none;background:#111;color:#fff;border-radius:3px;padding:8px 11px;font-size:11px;line-height:1.5;opacity:0;transition:opacity .12s;white-space:nowrap;z-index:20;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+.map-tip.on{opacity:1}
+.map-tip .tt-h{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:.04em;margin-bottom:5px;display:flex;align-items:center;gap:7px}
+.map-tip .tt-d{background:#cc0000;padding:1px 6px;border-radius:2px;font-size:10px}
+.map-tip .tt-r{display:flex;justify-content:space-between;gap:14px;color:#bbb}
+.map-tip .tt-r span:last-child{color:#fff;font-weight:600}
+.map-note{font-size:10.5px;color:#999;margin-top:8px;line-height:1.5}
+.map-note b{color:#cc0000;font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-sky"></div>
+  <div class="hero-desert"></div>
+  <div class="road-lines">
+    <div class="road-line"></div><div class="road-line"></div><div class="road-line"></div><div class="road-line"></div><div class="road-line"></div>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-logo-row">
+      <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAcAB4DASIAAhEBAxEB/8QAGAABAQEBAQAAAAAAAAAAAAAACAYHCQX/xAAtEAABAwIEAwcFAQAAAAAAAAACAQMEBQYABxESCCFiExQiMTJRUglBYXKyFf/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwAcxY78uQEaO0TrzhbQAE5kuFLbWRUOxsnkvXMCnMu1aZMhizBeHUY7RPgRb+ogEh0+27Gi8I/DxHtpmPfF5R+2rDrYuQYh+iMJc95J8/L9cUXHhU+4ZS09gTRvt6wwRL0ju3f1gDZxUZBTstqk5X6A09LtWUfhJOZQy+B9PsWD/jrzBj0+6bHhNVOM1MhVGA0TrTg6i4Jgi4AvE7kDUsu69/o26Dsy3576pH8Sb4xLqXZF5ctNdF/C4DQuEXiK7iUKw72kr3NU7KBUDLkx7AfT/P6+n3PqQT9bXtOC054XJTr3JeRDswJQIg0MSUSFeSpiqu6+bkuqhUelV2eUuPRQcahqSeNAXbyJfvppy9sB0ZsO+aJb/D1b9212c2xAYpTWp7tVPaO0UT5Eu3AR4gs569mlc/e97sKkRiUYMQD9CfIupcSVx3vcletij2zUJ5LSKOxsiRgTaCdRe6/nEpgP/9k=" style="height:44px;width:auto;filter:drop-shadow(0 0 1px rgba(255,255,255,0.3))" alt="International logo">
+      <div class="logo-text">International</div>
+    </div>
+    <div class="hero-title">ERP Supply Chain<br>Parameter Timeline</div>
+    <div class="hero-sub">Interactive AD Parameter — Small Group</div>
+    <div class="hero-rule"></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:#cc0000"></div>Parameter — Impact</div>
+    <div class="leg"><div class="leg-dot" style="background:#006633"></div>Parameter — Effect</div>
+    <div class="leg"><div class="leg-bar" style="background:#b36200;opacity:0.8"></div>Safety Stock scope</div>
+  </div>
+
+  <div style="overflow-x:auto;padding-bottom:2px">
+    <div class="ss-banner">
+      <span class="ss-text">◀ ── Safety Stock — impacts Purchase &amp; Delivery Schedules across entire line ── ▶</span>
+    </div>
+  </div>
+
+  <div class="tl-outer">
+  <div class="tl">
+
+    <div class="stage" id="st-edi" style="flex:1.4">
+      <div class="pins-above" style="min-height:20px"></div>
+      <div class="pa">↓</div>
+      <div class="rail-seg s-edi" onclick="selectStage('edi')"><div class="rl">EDI Requirements<br><span style="font-size:8px;opacity:0.7;font-weight:400;letter-spacing:0.06em">SUPPLIER CYCLE</span></div></div>
+      <div class="pa">↓</div>
+      <div class="pins-below">
+        <button class="pin-btn pi" onclick="selectParam('signal_code')" id="pb-signal_code">Signal Code</button>
+        <button class="pin-btn pi" onclick="selectParam('item_type')" id="pb-item_type">Item Type</button>
+        <button class="pin-btn pi" onclick="selectParam('reorder')" id="pb-reorder">Re-order Point</button>
+        <button class="pin-btn pi" onclick="selectParam('oqm')" id="pb-oqm">OQM</button>
+        <button class="pin-btn pi" onclick="selectParam('order_sys')" id="pb-order_sys">Order System</button>
+        <button class="pin-btn pi" onclick="selectParam('pur_unit')" id="pb-pur_unit">Purchase Unit</button>
+        <button class="pin-btn pi" onclick="selectParam('contract')" id="pb-contract">Contract Status</button>
+      </div>
+    </div>
+    <div class="conn">›</div>
+
+    <div class="stage" id="st-mrd" style="flex:1">
+      <div class="pins-above" style="position:relative">
+        <!-- Safety Time spans above MRD+Ship via absolute positioning -->
+      </div>
+      <div class="pa" style="opacity:0">↓</div>
+      <div class="rail-seg s-mrd" onclick="selectStage('mrd')"><div class="rl">MRD 830<br><span style="font-size:8px;opacity:0.65;font-weight:400;letter-spacing:0.04em">Material Required Date</span></div></div>
+      <div class="pa" style="opacity:0">↓</div>
+      <div class="pins-below"></div>
+    </div>
+    <!-- Special connector with Safety Time spanning above MRD+Ship -->
+    <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:auto">
+      <div style="display:flex;flex-direction:column;align-items:center;padding-bottom:5px;min-height:72px;justify-content:flex-end">
+        <button class="pin-btn pi" onclick="selectParam('safety_time')" id="pb-safety_time" style="white-space:nowrap">← Safety Time →</button>
+        <div style="display:flex;gap:0;align-items:flex-end;margin-top:4px">
+          <div style="width:32px;height:2px;background:#cc0000;opacity:0.35;border-radius:1px"></div>
+          <div style="font-size:11px;color:#bbb;line-height:1;padding:0 3px">↓</div>
+          <div style="width:32px;height:2px;background:#cc0000;opacity:0.35;border-radius:1px"></div>
+        </div>
+      </div>
+      <div style="height:44px;display:flex;align-items:center;padding:0 4px;color:#bbb;font-size:14px">›</div>
+      <div style="min-height:72px"></div>
+    </div>
+
+    <div class="stage" id="st-ship" style="flex:1.1">
+      <div class="pins-above">
+      </div>
+      <div class="pa">↓</div>
+      <div class="rail-seg s-ship" onclick="selectStage('ship')"><div class="rl">Ship Date 862</div></div>
+      <div class="pa" style="opacity:0">↓</div>
+      <div class="pins-below"></div>
+    </div>
+    <div class="conn">›</div>
+
+    <div class="stage" id="st-erd" style="flex:1.1">
+      <div class="pins-above">
+        <button class="pin-btn pi" onclick="selectParam('adv866')" id="pb-adv866">866 Advancement</button>
+        <button class="pin-btn pi" onclick="selectParam('qfactor866')" id="pb-qfactor866">Qfactor 866</button>
+      </div>
+      <div class="pa">↓</div>
+      <div class="rail-seg s-erd" onclick="selectStage('erd')"><div class="rl">ERD 866</div></div>
+      <div class="pa" style="opacity:0">↓</div>
+      <div class="pins-below"></div>
+    </div>
+    <div class="conn">›</div>
+
+    <div class="stage" id="st-whse" style="flex:1">
+      <div class="pins-above" style="min-height:20px"></div>
+      <div class="pa" style="opacity:0">↓</div>
+      <div class="rail-seg s-whse" onclick="selectStage('whse')"><div class="rl">Whse Stock</div></div>
+      <div class="pa" style="opacity:0">↓</div>
+      <div class="pins-below"></div>
+    </div>
+
+  
+    <div class="conn">›</div>
+
+    <div class="stage" id="st-lf" style="flex:1">
+      <div class="pins-above" style="min-height:20px"></div>
+      <div class="pa" style="opacity:0">↓</div>
+      <div class="rail-seg s-lf" onclick="selectStage('lf')"><div class="rl">Line Feeding</div></div>
+      <div class="pa">↓</div>
+      <div class="pins-below">
+        <button class="pin-btn pe" onclick="selectParam('item_group')" id="pb-item_group">Item Group</button>
+        <button class="pin-btn pe" onclick="selectParam('prod_type')" id="pb-prod_type">Product Type</button>
+        <button class="pin-btn pe" onclick="selectParam('scrap')" id="pb-scrap">Scrap Factor</button>
+      </div>
+    </div>
+    <div class="conn">›</div>
+
+    <div class="stage" id="st-trans" style="flex:1.1">
+      <div class="pins-above">
+        <button class="pin-btn pi" onclick="selectParam('queue_wc')" id="pb-queue_wc">Queue Factor wc</button>
+      </div>
+      <div class="pa">↓</div>
+      <div class="rail-seg s-trans" onclick="selectStage('trans')"><div class="rl">Trans Date / POA</div></div>
+      <div class="pa" style="opacity:0">↓</div>
+      <div class="pins-below"></div>
+    </div>
+    <div class="conn">›</div>
+
+    <div class="stage" id="st-build" style="flex:1.1">
+      <div class="pins-above" style="min-height:20px"></div>
+      <div class="pa" style="opacity:0">↓</div>
+      <div class="rail-seg s-build" onclick="selectStage('build')"><div class="rl">Production Build Date</div></div>
+      <div class="pa" style="opacity:0">↓</div>
+      <div class="pins-below"></div>
+    </div></div>
+  </div>
+
+  <p class="hint">Click any stage or parameter to explore details below</p>
+
+  <div class="dpanel" id="dpanel" style="display:none">
+    <div class="dheader" id="dheader"></div>
+    <div class="dbody" id="dbody"></div>
+  </div>
+
+
+  <div class="sdiv"></div>
+
+  <div class="map-sec">
+    <p class="gloss-title">TL Transit Time to Laredo, TX</p>
+    <div class="map-head">
+      <p class="map-intro">Average truckload transit time from each state to the <b>Laredo, TX</b> crossing, derived from a 3-point mileage average (closest, central, and furthest city). Transit days apply the <b>500 miles = 1 day</b> rule used to set Safety Time. Hover or tap a state for detail.</p>
+      <div class="map-legend" id="mapLegend"></div>
+    </div>
+    <div class="map-wrap">
+      <svg class="map-svg" id="tlMap" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="map-tip" id="mapTip"></div>
+    </div>
+    <p class="map-note">Transit days shown are <b>transportation time only</b> &mdash; they do not include warehousing, kitting, sequencing, or line-feeding buffer. Border crossings add <b>+1 day</b>. Add these to determine total Safety Time.</p>
+  </div>
+
+  <div class="sdiv"></div>
+
+  <div>
+    <p class="gloss-title">Parameter Reference</p>
+    <div class="gloss-grid" id="glossary"></div>
+  </div>
+</div>
+
+<script>
+const PARAMS={
+  signal_code:{name:'Signal Code',type:'impact',stage:'edi',owner:'Purchasing',
+    desc:'Controls how a part moves through the organization. Acts as a rule or tag that determines how a part is routed and processed across the company. The ERP uses Signal Codes to trigger routing, EDI demand, and automated workflows. Signal Codes (PUR / PLN) can stop EDI orders from being sent and cause supply gaps or production delays.',
+    pros:['Enables automated EDI demand generation','Ensures correct routing without manual intervention','Standardizes part handling across the organization'],
+    cons:['Incorrect code can halt EDI orders entirely','Changes require cross-functional alignment','Errors are difficult to detect until supply gaps appear']},
+  item_type:{name:'Item Type',type:'impact',stage:'edi',owner:'PBA/Technical Services',
+    desc:'A classification (e.g., purchased, manufactured) that defines how an item is handled. Item Type drives planning and sourcing logic in the ERP — MRP, purchasing, and inventory. Wrong classification leads to incorrect actions, increasing cost and lead time.',
+    pros:['Drives correct MRP and purchasing logic automatically','Reduces manual planning intervention','Ensures consistent inventory treatment'],
+    cons:['Incorrect classification causes wrong sourcing actions','Difficult to correct mid-production cycle','Impacts cost and lead time if set incorrectly']},
+  safety_stock:{name:'Safety Stock',type:'impact',stage:'all',owner:'Materials Planning',
+    desc:'A quantity buffer held on hand for a specific part number. It impacts Purchase and Delivery Schedules only. Safety Stock spans the entire timeline, providing a buffer against demand variability and supply disruptions throughout the supply chain process.',
+    pros:['Protects against demand variability and supply disruptions','Reduces risk of production line stoppages','Covers lead time uncertainty from suppliers'],
+    cons:['Ties up working capital in inventory','Excess levels mask underlying supply chain issues','Must be reviewed regularly to stay accurate']},
+  safety_time:{name:'Safety Time',type:'impact',stage:'ship',owner:'Materials Planning',
+    desc:'Number of transit time days (working days) between supplier\'s ship date to POA. Plants add safety time days as a buffer to account for warehousing time, kitting, sequencing, and factory feeding time needed. 500 miles equal one day of transportation time a supplier must ship early. Border crossings are considered as an additional day of transportation time. It impacts both the MRD 830 planning schedule and the Ship Date 862 — adjusting when demand signals are sent and when shipment is expected.',
+    pros:['Absorbs transit and receiving variability','Ensures parts are available before point of application','Accounts for warehousing, kitting and sequencing time'],
+    cons:['With Too much, increases inventory carrying cost','With Too little, creates stockout risk','Requires calibration per part and supplier lane']},
+  reorder:{name:'Re-order Point',type:'impact',stage:'edi',owner:'Materials Planning',
+    desc:'International uses 1 (one) for all purchased parts. Do NOT request to alter this field. Stores the reorder point that can trigger replenishment when stock falls below threshold.',
+    pros:['Standardized value simplifies ERP configuration','Triggers replenishment at the right time','Consistent across all purchased part numbers'],
+    cons:['Fixed value limits flexibility for unique parts','Alterations can break replenishment logic','Must not be changed without formal authorization']},
+  queue_wc:{name:'Queue Factor wc',type:'impact',stage:'trans',owner:'Line Feeding',
+    desc:'Queue Factor is NOT a material buffer. It represents the true Point of Application (POA) on the assembly line. It determines exactly where and when a component must be physically present on the production line.',
+    pros:['Precisely anchors material to the correct POA','Eliminates guesswork in line-side delivery timing','Directly tied to production rate and lineset'],
+    cons:['Confusion with material buffer can cause planning errors','Requires accurate lineset data to be valid','Changes to line layout require Queue Factor recalculation']},
+  oqm:{name:'OQM',type:'impact',stage:'edi',owner:'Materials Planning',
+    desc:'A multiplier that controls ordering in multiples of X (order quantity multiple). It is determined by: • Supplier/Purchasing agreement based on contract class • Standard packaging quantity • Plant-specific application or lineside space requirements.',
+    pros:['Encodes all ordering terms in one place','Enforces MOQ and lot size compliance automatically','Links supplier, pricing, and quantity rules to the part'],
+    cons:['Outdated OQM leads to incorrect order quantities','Requires Procurement coordination to update','Errors can result in over- or under-ordering']},
+  item_group:{name:'Item Group',type:'effect',stage:'lf',owner:'Logistics/Materials Planning (TBP)',
+    desc:'Classifies the item into an item group for policy setting, reporting, and segmentation. Drives downstream logic for inventory policies, reporting aggregation, and ERP rule assignment across the supply chain.',
+    pros:['Enables segment-level policy management','Simplifies reporting aggregation across part families','Drives consistent ERP rule application'],
+    cons:['Wrong group assignment misaligns inventory policy','Changes affect all parts within the group','Requires governance to maintain classification integrity']},
+  scrap:{name:'Scrap Factor',type:'effect',stage:'lf',owner:'Manufacturing',
+    desc:'Stores a scrap factor used to inflate requirements for expected loss or scrap during production. Ensures that planned orders account for material that will not survive the manufacturing process.',
+    pros:['Prevents shortage caused by production scrap','Automatically inflates planned orders to cover loss','Reduces emergency purchasing for scrap-prone parts'],
+    cons:['Overestimated scrap leads to excess inventory','Requires regular review as process improves','Does not address root cause of scrap — only compensates']},
+  prod_type:{name:'Product Type',type:'effect',stage:'lf',owner:'Logistics/Materials Planning (TBP)',
+    desc:'Classifies the item into a product type for analysis, reporting, and control logic. Used for demand segmentation, supply chain performance analytics, and systematic ERP control flows.',
+    pros:['Enables demand segmentation by product category','Supports supply chain performance analytics','Drives systematic ERP control flows'],
+    cons:['Incorrect classification skews reporting','Requires alignment between planning and engineering','Changes may require downstream data cleanup']},
+  qfactor866:{name:'Qfactor 866',type:'impact',stage:'erd',owner:'EDI Engineer',
+    desc:'The scheduled offset between the end of the assembly process and the point of application of the respective component. Takes into account the production rate calendar and lineset to establish dock date and point of application on the 866 schedule.',
+    pros:['Aligns dock date precisely to production schedule','Accounts for production rate and lineset dynamics','Reduces material arriving too early or too late'],
+    cons:['Must be recalculated when lineset changes','Errors cascade into incorrect 866 schedules','Requires coordination between planning and production']},
+  adv866:{name:'866 Advancement',type:'impact',stage:'erd',owner:'EDI Engineer',
+    desc:'The number of additional hours a component is needed in advance to complete a unique process. Added on top of the standard Qfactor 866 offset to accommodate special processing, sub-assembly, or unique component preparation steps.',
+    pros:['Accounts for unique process lead time','Layered on top of Qfactor for precise scheduling','Prevents late delivery for complex components'],
+    cons:['An incorrect value results in early or late delivery','Applies only to non-standard components','Adds complexity to 866 schedule management']},
+  order_sys:{name:'Order System',type:'impact',stage:'edi',owner:'Materials Planning',
+    desc:'The MRP order system is the system the company has chosen to house the financial and production information. Governs how demand signals are generated, consolidated, and released to suppliers through EDI transactions.',
+    pros:['Centralizes demand signal generation','Ensures consistent EDI release to all suppliers','Integrates financial and production planning data'],
+    cons:['Incorrect system setup affects all EDI outputs','Changes require IT and planning coordination','Single system dependency creates risk if unavailable']},
+  pur_unit:{name:'Purchase Unit',type:'impact',stage:'edi',owner:'Purchasing',
+    desc:'Defines the purchasing unit of measure used when ordering the item. Must align with supplier packaging and contract terms to prevent quantity discrepancies in EDI purchase orders.',
+    pros:['Ensures EDI quantities match supplier packaging','Prevents over/under ordering due to UOM mismatch','Aligned with contract terms for accurate invoicing'],
+    cons:['Mismatch causes quantity discrepancies in POs','Requires supplier confirmation to set correctly','Errors result in receiving and invoice disputes']},
+  contract:{name:'Contract Status',type:'impact',stage:'edi',owner:'Purchasing',
+    desc:'Procurement negotiates the contracts with the suppliers. Within the MRP system, the new and old contracts are available to view. The contracts establish which suppliers parts can be ordered from and what time period is valid.',
+    pros:['Defines authorized suppliers per part number','Enforces sourcing compliance through ERP','Provides audit trail of contract history'],
+    cons:['Expired contracts block EDI order generation','Requires timely Procurement updates to avoid gaps','Incorrect status may allow unauthorized sourcing']},
+  moq:{name:'MOQ / Lot Sizes',type:'impact',stage:'glossary',owner:'Materials Planning',
+    desc:'International uses a quantity of 1 (one) for the Minimum Order for all part numbers. Do not alter this value, as it can change the quantity of pieces in EDI for a material when a "Past Due" order is in place.',
+    pros:['Encodes minimum order and lot size rules in one place','Prevents under-ordering relative to supplier agreements','Supports standard packaging compliance'],
+    cons:['Fixed MOQ of 1 limits flexibility for bulk-priced items','Must be aligned with contract terms to avoid discrepancies','Alterations without authorization can disrupt ordering logic']},
+  cpc_code:{name:'CPC Code',type:'impact',stage:'glossary',owner:'Finance',
+    desc:'Assigns the cost price component used when building or analyzing item cost. Used to classify and allocate costs accurately across the bill of materials and financial reporting.',
+    pros:['Enables accurate cost allocation per item','Supports financial reporting and cost analysis','Standardizes cost component classification across plants'],
+    cons:['Incorrect code skews cost analysis and reporting','Requires Finance coordination to update','Errors can propagate into BOM cost roll-ups']},
+  phantom:{name:'Phantom',type:'impact',stage:'glossary',owner:'Manufacturing, PBA Technical Services',
+    desc:'Flags the item as a phantom so it can exist in the BOM structure without normal stock handling. Phantom items pass their components directly to the parent order without creating a separate work order or inventory transaction. Rule to follow: Every manufactured part number must have the parameter set to "YES" and every purchased part number to "NO". This is to ensure that when the MRP runs, the system explodes the requirement for the manufactured part number through the purchased part numbers.',
+    pros:['Allows complex BOM structures without excess transactions','Simplifies planning for sub-assemblies not physically stocked','Reduces unnecessary inventory movement and WO creation'],
+    cons:['Misuse can cause components to be overlooked in planning','Requires careful BOM design to avoid cascading phantom loops','Visibility into phantom consumption can be limited in reporting']},
+  contract_dates:{name:'Contract Dates & Schedule (Baan / LN)',type:'impact',stage:'glossary',owner:'Purchasing',
+    desc:'Covers contract validity and schedule confirmation fields across both ERP environments. In Baan: Expired Date (contract) — the expiry date on the contract that governs valid sourcing periods. In LN: Line Status (contract line must be checked to confirm all items are included) and Purchase Schedule in Use (must be marked on the order to confirm required demand). Both systems require active contract management to ensure uninterrupted EDI ordering.',
+    pros:['Ensures sourcing is within valid contract periods','Confirms demand is tied to active, authorized contracts','Provides a compliance checkpoint across both ERP platforms'],
+    cons:['Expired or inactive status blocks order generation','Requires manual verification in LN for line-level completeness','Managing two ERP environments increases risk of oversight']}
+};
+const STAGES={
+  edi:{label:'EDI Requirements',bg:'#e0e0e0',col:'#333',desc:'The starting point of the demand signal. EDI transactions are triggered based on parameter configuration — Signal Code, Item Type, OQM, and Contract Status determine whether an order can be generated, who it goes to, and in what quantity.'},
+  mrd:{label:'MRD 830 — Material Required Date',bg:'#d0d0d0',col:'#222',desc:'Material Required Date (830). The planning schedule sent to suppliers showing anticipated demand over a defined horizon, generated from MRP calculations. MRD means Required Material Date — it communicates to the supplier when material is required, shaping their production and delivery planning. Safety Time directly impacts this schedule by adjusting the horizon dates forward.'},
+  ship:{label:'Ship Date 862',bg:'#b8b8b8',col:'#111',desc:'The Shipping Schedule (862) defines when the supplier must ship. Safety Time is applied here — the ERP back-calculates ship date from the required availability date by subtracting the Safety Time buffer.'},
+  erd:{label:'ERD 866',bg:'#b8b8b8',col:'#111',desc:'Expected Receipt Date (866). The date material is expected to arrive at the dock. Qfactor 866 and 866 Advancement offsets are applied to align component availability with the exact point of application on the assembly line.'},
+  trans:{label:'Trans Date / POA',bg:'#a0a0a0',col:'#111',desc:'Transaction Date — the date material moves from receiving into the production process. Queue Factor wc defines the true Point of Application (POA), anchoring when material must be available on the assembly line.'},
+  build:{label:'PRODUCTION BUILD DATE',bg:'#111',col:'#fff',desc:'The scheduled production date. All upstream parameters converge to ensure the right materials, in the right quantity, are available at the right point on the line on this date.'},
+  lf:{label:'Line Feeding',bg:'#cc0000',col:'#fff',desc:'The process of delivering parts to the assembly line. Item Group, Product Type, and Scrap Factor govern how parts are classified, planned for scrap loss, and routed to the line.'},
+  whse:{label:'Warehouse Stock',bg:'#d0d0d0',col:'#222',desc:'Physical inventory held in the warehouse. The endpoint of the supply chain process. Safety Stock buffers protect warehouse levels against variability.'},
+};
+function selectStage(id){
+  document.querySelectorAll('.rail-seg').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('#st-'+id+' .rail-seg').forEach(s=>s.classList.add('active'));
+  document.querySelectorAll('.pin-btn').forEach(e=>e.classList.remove('sel'));
+  const s=STAGES[id];
+  // Safety Time spans both mrd and ship
+  const extraStages = {mrd:['ship'], ship:['mrd']};
+  const stagesForFilter = [id, ...(extraStages[id]||[])];
+  const params=Object.values(PARAMS).filter(p=>
+    stagesForFilter.includes(p.stage) || p.stage==='all'
+  );
+  document.getElementById('dheader').innerHTML=
+    '<div class="chip" style="background:'+s.bg+';color:'+s.col+';border:1.5px solid rgba(0,0,0,0.12)">'+s.label+'</div>'+
+    '<p class="dhead-txt">'+s.desc+'</p>';
+  const body=document.getElementById('dbody');
+  body.style.gridTemplateColumns='';
+  body.innerHTML=params.length===0
+    ?'<p style="font-size:12px;color:#aaa;grid-column:1/-1">No direct parameters — downstream outcome of upstream configuration.</p>'
+    :params.map(p=>pcard(p)).join('');
+  document.getElementById('dpanel').style.display='';
+}
+function selectParam(id){
+  const p=PARAMS[id];
+  document.querySelectorAll('.pin-btn').forEach(e=>e.classList.remove('sel'));
+  const pb=document.getElementById('pb-'+id);if(pb)pb.classList.add('sel');
+  const imp=p.type==='impact';
+  document.getElementById('dheader').innerHTML=
+    '<div class="chip" style="background:'+(imp?'rgba(204,0,0,0.09)':'rgba(0,102,51,0.09)')+';color:'+(imp?'#cc0000':'#006633')+';border:1.5px solid '+(imp?'rgba(204,0,0,0.35)':'rgba(0,102,51,0.35)')+'">'+
+    (imp?'▲ Impact':'▼ Effect')+'</div>'+
+    '<span style="font-family:Barlow Condensed,sans-serif;font-size:16px;font-weight:800;color:#111;letter-spacing:0.02em">'+p.name+'</span>';
+  const body=document.getElementById('dbody');
+  body.style.gridTemplateColumns='1fr';
+  body.innerHTML='<p style="font-size:13px;color:#555;line-height:1.7">'+p.desc+'</p>';
+  document.getElementById('dpanel').style.display='';
+  expandGlossCard(id);
+}
+function pcard(p){
+  const key=Object.keys(PARAMS).find(k=>PARAMS[k]===p);
+  return '<div class="pcard '+p.type+'" onclick="selectParam(\''+key+'\')">'+
+    '<div class="pt '+p.type+'">'+(p.type==='impact'?'▲ Impact':'▼ Effect')+'</div>'+
+    '<div class="pn">'+p.name+'</div>'+
+    '<div class="pd">'+p.desc.slice(0,110)+(p.desc.length>110?'…':'')+'</div></div>';
+}
+const gloss=document.getElementById('glossary');
+const glossCards={};
+
+// Split params: timeline ones vs glossary-only
+const timelineParams = Object.entries(PARAMS).filter(([k,p])=>p.stage!=='glossary');
+const glossaryOnlyParams = Object.entries(PARAMS).filter(([k,p])=>p.stage==='glossary');
+
+function buildCard(key, p) {
+  const imp=p.type==='impact';
+  const d=document.createElement('div');
+  d.className='gc';
+  d.id='gc-'+key;
+  const prosHtml=p.pros?'<div class="g-divider"></div><div class="g-pros"><div class="g-section-title">Pros</div><ul class="g-list">'+p.pros.map(x=>'<li>'+x+'</li>').join('')+'</ul></div>':'';
+  const consHtml=p.cons?'<div class="g-divider"></div><div class="g-cons"><div class="g-section-title">Cons</div><ul class="g-list">'+p.cons.map(x=>'<li>'+x+'</li>').join('')+'</ul></div>':'';
+  const ownerHtml=p.owner?'<div class="g-divider"></div><div class="g-owner"><div class="g-section-title">Owner</div><div class="g-owner-val">'+p.owner+'</div></div>':'';
+  d.innerHTML=
+    '<div class="gc-header">'+
+      '<div class="gn" style="color:'+(imp?'#cc0000':'#006633')+'">'+p.name+
+        '<span class="gbadge" style="background:'+(imp?'rgba(204,0,0,0.09)':'rgba(0,102,51,0.09)')+';color:'+(imp?'#cc0000':'#006633')+'">'+p.type+'</span>'+
+      '</div>'+
+      '<span class="gc-chevron">▼</span>'+
+    '</div>'+
+    '<div class="gd">'+p.desc+'</div>'+
+    '<div class="gc-extra">'+prosHtml+consHtml+ownerHtml+'</div>';
+  d.addEventListener('click',()=>toggleCard(key));
+  glossCards[key]=d;
+  return d;
+}
+
+// Render timeline params
+timelineParams.forEach(([key,p])=> gloss.appendChild(buildCard(key,p)));
+
+// Glossary-only separator + cards
+if(glossaryOnlyParams.length>0){
+  const sep=document.createElement('div');
+  sep.style.cssText='grid-column:1/-1;display:flex;align-items:center;gap:12px;margin-top:8px;margin-bottom:2px';
+  sep.innerHTML='<span style="font-family:Barlow Condensed,sans-serif;font-size:11px;font-weight:800;color:#aaa;letter-spacing:0.12em;text-transform:uppercase;white-space:nowrap">Additional Reference Parameters</span><div style="flex:1;height:1.5px;background:#eee"></div>';
+  gloss.appendChild(sep);
+  glossaryOnlyParams.forEach(([key,p])=> gloss.appendChild(buildCard(key,p)));
+}
+
+function toggleCard(key){
+  const card=glossCards[key];
+  const isOpen=card.classList.contains('expanded');
+  // collapse all
+  Object.values(glossCards).forEach(c=>c.classList.remove('expanded'));
+  if(!isOpen) card.classList.add('expanded');
+}
+
+function expandGlossCard(key){
+  Object.values(glossCards).forEach(c=>c.classList.remove('expanded'));
+  const card=glossCards[key];
+  if(card){
+    card.classList.add('expanded');
+    setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+  }
+}
+
+// ── TL TRANSIT MAP ──
+const TL_DATA = [{"abbr":"AL","state":"Alabama","closestCity":"Bayou La Batre","closestMi":708,"centralCity":"Maplesville","centralMi":840,"furthestCity":"Bridgeport","furthestMi":962,"avgMi":836.7,"rangeMi":254,"days":1.67,"x":628,"y":438},{"abbr":"AZ","state":"Arizona","closestCity":"Douglas","closestMi":659,"centralCity":"Prescott","centralMi":858,"furthestCity":"Colorado City","furthestMi":1022,"avgMi":846.3,"rangeMi":363,"days":1.69,"x":216,"y":398},{"abbr":"AR","state":"Arkansas","closestCity":"Texarkana","closestMi":522,"centralCity":"Little Rock","centralMi":659,"furthestCity":"Blytheville","furthestMi":809,"avgMi":663.3,"rangeMi":287,"days":1.33,"x":536,"y":414},{"abbr":"CA","state":"California","closestCity":"Blythe","closestMi":990,"centralCity":"Madera","centralMi":1339,"furthestCity":"Crescent City","furthestMi":1705,"avgMi":1344.7,"rangeMi":715,"days":2.69,"x":120,"y":300},{"abbr":"CO","state":"Colorado","closestCity":"Springfield","closestMi":708,"centralCity":"Colorado Springs","centralMi":867,"furthestCity":"Craig","furthestMi":1009,"avgMi":861.3,"rangeMi":301,"days":1.72,"x":320,"y":300},{"abbr":"CT","state":"Connecticut","closestCity":"Greenwich","closestMi":1738,"centralCity":"East Berlin","centralMi":1798,"furthestCity":"Putnam","furthestMi":1844,"avgMi":1793.3,"rangeMi":106,"days":3.59,"x":830,"y":215},{"abbr":"DE","state":"Delaware","closestCity":"Delmar","closestMi":1573,"centralCity":"Dover","centralMi":1591,"furthestCity":"Wilmington","furthestMi":1610,"avgMi":1591.3,"rangeMi":37,"days":3.18,"x":800,"y":268},{"abbr":"FL","state":"Florida","closestCity":"Pensacola","closestMi":769,"centralCity":"Brooksville","centralMi":1042,"furthestCity":"Fernandina Beach","furthestMi":1110,"avgMi":973.7,"rangeMi":341,"days":1.95,"x":720,"y":505},{"abbr":"GA","state":"Georgia","closestCity":"Bainbridge","closestMi":930,"centralCity":"Macon","centralMi":1023,"furthestCity":"Dillard","furthestMi":1081,"avgMi":1011.3,"rangeMi":151,"days":2.02,"x":680,"y":440},{"abbr":"ID","state":"Idaho","closestCity":"Preston","closestMi":1226,"centralCity":"Challis","centralMi":1433,"furthestCity":"Bonners Ferry","furthestMi":1717,"avgMi":1458.7,"rangeMi":491,"days":2.92,"x":210,"y":175},{"abbr":"IL","state":"Illinois","closestCity":"Cairo","closestMi":891,"centralCity":"Springfield","centralMi":1048,"furthestCity":"Zion","furthestMi":1223,"avgMi":1054,"rangeMi":332,"days":2.11,"x":578,"y":300},{"abbr":"IN","state":"Indiana","closestCity":"Evansville","closestMi":1000,"centralCity":"Indianapolis","centralMi":1142,"furthestCity":"Angola","furthestMi":1275,"avgMi":1139,"rangeMi":275,"days":2.28,"x":620,"y":295},{"abbr":"IA","state":"Iowa","closestCity":"Keokuk","closestMi":1004,"centralCity":"Ames","centralMi":1062,"furthestCity":"Lansing","furthestMi":1189,"avgMi":1085,"rangeMi":185,"days":2.17,"x":520,"y":255},{"abbr":"KS","state":"Kansas","closestCity":"Liberal","closestMi":664,"centralCity":"Bushton","centralMi":762,"furthestCity":"Atchison","furthestMi":870,"avgMi":765.3,"rangeMi":206,"days":1.53,"x":450,"y":325},{"abbr":"KY","state":"Kentucky","closestCity":"Paducah","closestMi":917,"centralCity":"Lebanon","centralMi":1077,"furthestCity":"Ashland","furthestMi":1234,"avgMi":1076,"rangeMi":317,"days":2.15,"x":640,"y":340},{"abbr":"LA","state":"Louisiana","closestCity":"Cameron","closestMi":407,"centralCity":"Marksville","centralMi":515,"furthestCity":"Bogalusa","furthestMi":625,"avgMi":515.7,"rangeMi":218,"days":1.03,"x":548,"y":470},{"abbr":"ME","state":"Maine","closestCity":"Kittery","closestMi":1932,"centralCity":"Dover-Foxcroft","centralMi":2066,"furthestCity":"Fort Kent","furthestMi":2154,"avgMi":2050.7,"rangeMi":222,"days":4.1,"x":860,"y":120},{"abbr":"MD","state":"Maryland","closestCity":"Oakland","closestMi":1416,"centralCity":"Bowie","centralMi":1529,"furthestCity":"Ocean City","furthestMi":1595,"avgMi":1513.3,"rangeMi":179,"days":3.03,"x":780,"y":285},{"abbr":"MA","state":"Massachusetts","closestCity":"Westfield","closestMi":1811,"centralCity":"Worcester","centralMi":1859,"furthestCity":"Provincetown","furthestMi":1930,"avgMi":1866.7,"rangeMi":119,"days":3.73,"x":838,"y":195},{"abbr":"MI","state":"Michigan","closestCity":"New Buffalo","closestMi":1222,"centralCity":"Cadillac","centralMi":1401,"furthestCity":"Sault Ste. Marie","furthestMi":1550,"avgMi":1391,"rangeMi":328,"days":2.78,"x":628,"y":215},{"abbr":"MN","state":"Minnesota","closestCity":"Luverne","closestMi":1131,"centralCity":"Brainerd","centralMi":1328,"furthestCity":"Grand Portage","furthestMi":1509,"avgMi":1322.7,"rangeMi":378,"days":2.65,"x":500,"y":160},{"abbr":"MS","state":"Mississippi","closestCity":"Natchez","closestMi":562,"centralCity":"Carthage","centralMi":690,"furthestCity":"Iuka","furthestMi":837,"avgMi":696.3,"rangeMi":275,"days":1.39,"x":578,"y":450},{"abbr":"MO","state":"Missouri","closestCity":"Joplin","closestMi":723,"centralCity":"Jefferson City","centralMi":853,"furthestCity":"Hannibal","furthestMi":964,"avgMi":846.7,"rangeMi":241,"days":1.69,"x":530,"y":340},{"abbr":"MT","state":"Montana","closestCity":"Broadus","closestMi":1281,"centralCity":"Lewistown","centralMi":1458,"furthestCity":"Eureka","furthestMi":1694,"avgMi":1477.7,"rangeMi":413,"days":2.96,"x":280,"y":130},{"abbr":"NE","state":"Nebraska","closestCity":"McCook","closestMi":880,"centralCity":"Broken Bow","centralMi":970,"furthestCity":"South Sioux City","furthestMi":1049,"avgMi":966.3,"rangeMi":169,"days":1.93,"x":430,"y":265},{"abbr":"NV","state":"Nevada","closestCity":"Laughlin","closestMi":1033,"centralCity":"Austin","centralMi":1278,"furthestCity":"Jackpot","furthestMi":1316,"avgMi":1209,"rangeMi":283,"days":2.42,"x":160,"y":270},{"abbr":"NH","state":"New Hampshire","closestCity":"Keene","closestMi":1857,"centralCity":"Ashland","centralMi":1911,"furthestCity":"Berlin","furthestMi":1953,"avgMi":1907,"rangeMi":96,"days":3.81,"x":838,"y":160},{"abbr":"NJ","state":"New Jersey","closestCity":"Cape May","closestMi":1619,"centralCity":"Trenton","centralMi":1664,"furthestCity":"Montague","furthestMi":1693,"avgMi":1658.7,"rangeMi":74,"days":3.32,"x":806,"y":250},{"abbr":"NM","state":"New Mexico","closestCity":"Hobbs","closestMi":420,"centralCity":"Willard","centralMi":617,"furthestCity":"Farmington","furthestMi":815,"avgMi":617.3,"rangeMi":395,"days":1.23,"x":290,"y":410},{"abbr":"NY","state":"New York","closestCity":"Jamestown","closestMi":1522,"centralCity":"Oneida","centralMi":1713,"furthestCity":"Plattsburgh","furthestMi":1864,"avgMi":1699.7,"rangeMi":342,"days":3.4,"x":780,"y":195},{"abbr":"NC","state":"North Carolina","closestCity":"Murphy","closestMi":1051,"centralCity":"Sanford","centralMi":1306,"furthestCity":"Nags Head","furthestMi":1515,"avgMi":1290.7,"rangeMi":464,"days":2.58,"x":740,"y":375},{"abbr":"ND","state":"North Dakota","closestCity":"Bowman","closestMi":1308,"centralCity":"McClusky","centralMi":1379,"furthestCity":"Pembina","furthestMi":1488,"avgMi":1391.7,"rangeMi":180,"days":2.78,"x":410,"y":125},{"abbr":"OH","state":"Ohio","closestCity":"Cincinnati","closestMi":1177,"centralCity":"Centerburg","centralMi":1299,"furthestCity":"Ashtabula","furthestMi":1448,"avgMi":1308,"rangeMi":271,"days":2.62,"x":668,"y":285},{"abbr":"OK","state":"Oklahoma","closestCity":"Altus","closestMi":493,"centralCity":"Edmond","centralMi":571,"furthestCity":"Miami","furthestMi":702,"avgMi":588.7,"rangeMi":209,"days":1.18,"x":460,"y":395},{"abbr":"OR","state":"Oregon","closestCity":"Ontario","closestMi":1497,"centralCity":"Prineville","centralMi":1629,"furthestCity":"Astoria","furthestMi":1850,"avgMi":1658.7,"rangeMi":353,"days":3.32,"x":130,"y":140},{"abbr":"PA","state":"Pennsylvania","closestCity":"Waynesburg","closestMi":1397,"centralCity":"State College","centralMi":1540,"furthestCity":"Milford","furthestMi":1692,"avgMi":1543,"rangeMi":295,"days":3.09,"x":750,"y":255},{"abbr":"RI","state":"Rhode Island","closestCity":"Westerly","closestMi":1833,"centralCity":"West Warwick","centralMi":1854,"furthestCity":"Woonsocket","furthestMi":1865,"avgMi":1850.7,"rangeMi":32,"days":3.7,"x":845,"y":205},{"abbr":"SC","state":"South Carolina","closestCity":"Aiken","closestMi":1136,"centralCity":"Columbia","centralMi":1189,"furthestCity":"Myrtle Beach","furthestMi":1296,"avgMi":1207,"rangeMi":160,"days":2.41,"x":720,"y":410},{"abbr":"SD","state":"South Dakota","closestCity":"Hot Springs","closestMi":1123,"centralCity":"Pierre","centralMi":1171,"furthestCity":"Sisseton","furthestMi":1262,"avgMi":1185.3,"rangeMi":139,"days":2.37,"x":420,"y":195},{"abbr":"TN","state":"Tennessee","closestCity":"Memphis","closestMi":768,"centralCity":"Murfreesboro","centralMi":964,"furthestCity":"Bristol","furthestMi":1190,"avgMi":974,"rangeMi":422,"days":1.95,"x":620,"y":375},{"abbr":"TX","state":"Texas","closestCity":"Laredo","closestMi":0,"centralCity":"Brady","centralMi":275,"furthestCity":"Texline","furthestMi":647,"avgMi":307.3,"rangeMi":647,"days":0.61,"x":430,"y":470},{"abbr":"UT","state":"Utah","closestCity":"Bluff","closestMi":893,"centralCity":"Manti","centralMi":1074,"furthestCity":"Logan","furthestMi":1205,"avgMi":1057.3,"rangeMi":312,"days":2.11,"x":240,"y":290},{"abbr":"VT","state":"Vermont","closestCity":"Bennington","closestMi":1814,"centralCity":"Roxbury","centralMi":1876,"furthestCity":"Newport","furthestMi":1925,"avgMi":1871.7,"rangeMi":111,"days":3.74,"x":818,"y":150},{"abbr":"VA","state":"Virginia","closestCity":"Bristol","closestMi":1190,"centralCity":"Buckingham","centralMi":1384,"furthestCity":"Chincoteague","furthestMi":1570,"avgMi":1381.3,"rangeMi":380,"days":2.76,"x":750,"y":330},{"abbr":"WA","state":"Washington","closestCity":"Walla Walla","closestMi":1644,"centralCity":"Wenatchee","centralMi":1779,"furthestCity":"Port Angeles","furthestMi":1916,"avgMi":1779.7,"rangeMi":272,"days":3.56,"x":150,"y":80},{"abbr":"WV","state":"West Virginia","closestCity":"Bluefield","closestMi":1259,"centralCity":"Sutton","centralMi":1333,"furthestCity":"Weirton","furthestMi":1399,"avgMi":1330.3,"rangeMi":140,"days":2.66,"x":700,"y":305},{"abbr":"WI","state":"Wisconsin","closestCity":"Beloit","closestMi":1192,"centralCity":"Marshfield","centralMi":1295,"furthestCity":"Superior","furthestMi":1387,"avgMi":1291.3,"rangeMi":195,"days":2.58,"x":560,"y":190},{"abbr":"WY","state":"Wyoming","closestCity":"Cheyenne","closestMi":989,"centralCity":"Lander","centralMi":1161,"furthestCity":"Cody","furthestMi":1289,"avgMi":1146.3,"rangeMi":300,"days":2.29,"x":320,"y":215}];
+
+const TL_BANDS=[
+ {max:1,  c:'#f7d5d5', t:'#7a1a1a', lb:'< 1'},
+ {max:2,  c:'#eba0a0', t:'#6b1414', lb:'1 – 2'},
+ {max:3,  c:'#dc5a5a', t:'#fff',    lb:'2 – 3'},
+ {max:4,  c:'#c11f1f', t:'#fff',    lb:'3 – 4'},
+ {max:99, c:'#7d0d0d', t:'#fff',    lb:'4 +'}
+];
+const tlBand=d=>TL_BANDS.find(b=>d<=b.max);
+
+(function(){
+  const svg=document.getElementById('tlMap');
+  const tip=document.getElementById('mapTip');
+  const wrap=svg.parentElement;
+  const NS='http://www.w3.org/2000/svg';
+  const el=(n,a)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;};
+
+  const HUB={x:430,y:520};
+
+  // connector lines hub -> state
+  TL_DATA.forEach(d=>{
+    svg.appendChild(el('line',{x1:HUB.x,y1:HUB.y,x2:d.x,y2:d.y,
+      stroke:'#cc0000','stroke-width':.5,opacity:.12}));
+  });
+
+  // hub marker
+  [26,17].forEach(r=>svg.appendChild(el('circle',{cx:HUB.x,cy:HUB.y,r:r,class:'hub-ring'})));
+  svg.appendChild(el('circle',{cx:HUB.x,cy:HUB.y,r:7,fill:'#cc0000'}));
+  const hl=el('text',{x:HUB.x,y:HUB.y+45,class:'hub-lb'});
+  hl.textContent='LAREDO, TX';
+  svg.appendChild(hl);
+
+  // state bubbles
+  TL_DATA.forEach(d=>{
+    const b=tlBand(d.days);
+    const r=11+Math.min(d.days,4.2)*2.4;
+    const g=el('g',{});
+    const c=el('circle',{cx:d.x,cy:d.y,r:r,fill:b.c,stroke:'#fff','stroke-width':1.5,class:'st-dot'});
+    const t=el('text',{x:d.x,y:d.y,class:'st-lb',fill:b.t});
+    t.textContent=d.abbr;
+    g.appendChild(c);g.appendChild(t);
+    svg.appendChild(g);
+
+    const show=ev=>{
+      document.querySelectorAll('.st-dot.sel').forEach(n=>n.classList.remove('sel'));
+      c.classList.add('sel');
+      tip.innerHTML='<div class="tt-h">'+d.state+
+        '<span class="tt-d">'+d.days.toFixed(2)+' days</span></div>'+
+        '<div class="tt-r"><span>Closest</span><span>'+d.closestCity+' &middot; '+d.closestMi+' mi</span></div>'+
+        '<div class="tt-r"><span>Central</span><span>'+d.centralCity+' &middot; '+d.centralMi+' mi</span></div>'+
+        '<div class="tt-r"><span>Furthest</span><span>'+d.furthestCity+' &middot; '+d.furthestMi+' mi</span></div>'+
+        '<div class="tt-r" style="margin-top:4px;border-top:1px solid #333;padding-top:4px"><span>3-pt avg</span><span>'+d.avgMi+' mi</span></div>'+
+        '<div class="tt-r"><span>Range</span><span>'+d.rangeMi+' mi</span></div>';
+      tip.classList.add('on');
+      const wr=wrap.getBoundingClientRect();
+      const px=(ev.touches?ev.touches[0].clientX:ev.clientX)-wr.left;
+      const py=(ev.touches?ev.touches[0].clientY:ev.clientY)-wr.top;
+      const tw=tip.offsetWidth, th=tip.offsetHeight;
+      let lx=px+16, ly=py-th-10;
+      if(lx+tw>wr.width) lx=px-tw-16;
+      if(lx<4) lx=4;
+      if(ly<4) ly=py+18;
+      tip.style.left=lx+'px'; tip.style.top=ly+'px';
+    };
+    const hide=()=>{tip.classList.remove('on');c.classList.remove('sel');};
+    c.addEventListener('mouseenter',show);
+    c.addEventListener('mousemove',show);
+    c.addEventListener('mouseleave',hide);
+    c.addEventListener('click',show);
+  });
+
+  // legend
+  const lg=document.getElementById('mapLegend');
+  lg.innerHTML='<div class="ml-item" style="margin-right:6px"><div class="ml-lb" style="color:#555">DAYS</div></div>'+
+    TL_BANDS.map(b=>'<div class="ml-item"><div class="ml-sw" style="background:'+b.c+'"></div><div class="ml-lb">'+b.lb+'</div></div>').join('');
+
+  svg.addEventListener('mouseleave',()=>{tip.classList.remove('on');
+    document.querySelectorAll('.st-dot.sel').forEach(n=>n.classList.remove('sel'));});
+})();
+
+</script>
+</body>
+</html>
