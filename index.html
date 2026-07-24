@@ -131,6 +131,29 @@ body{font-family:'Barlow',sans-serif;background:#fff;color:#111}
 .map-tip .tt-sep{margin-top:5px;border-top:1px solid #333;padding-top:5px}
 .map-note{font-size:10.5px;color:#999;margin-top:8px;line-height:1.55}
 .map-note b{color:#cc0000;font-weight:700}
+
+/* ── MAP TEASER (entry point on main screen) ── */
+.map-teaser{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border:1.5px solid #e5e5e5;border-radius:4px;padding:16px 18px;margin-top:1.5rem;background:#f5f5f5;transition:border-color .15s,background .15s}
+.map-teaser:hover{border-color:#ccc;background:#fff}
+.map-teaser-text{flex:1;min-width:220px}
+.map-teaser-text .gloss-title{margin-bottom:6px}
+.map-teaser-text .gloss-title::after{display:none}
+.map-teaser-desc{font-size:12px;color:#555;line-height:1.6;max-width:560px}
+.map-teaser-btn{flex-shrink:0;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:11px 20px;border-radius:3px;border:1.5px solid #cc0000;background:#cc0000;color:#fff;cursor:pointer;transition:all .15s;white-space:nowrap}
+.map-teaser-btn:hover{background:#a80000;border-color:#a80000;transform:translateY(-1px);box-shadow:0 4px 12px rgba(204,0,0,.25)}
+
+/* ── INLINE JUMP LINK (Safety Time → map) ── */
+.map-jump{color:#cc0000;font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.map-jump:hover{color:#a80000}
+
+/* ── MAP SECOND SCREEN (hidden overlay, not exposed on main flow) ── */
+.map-screen{position:fixed;inset:0;background:#fff;z-index:1000;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.map-screen.open{display:block}
+.map-screen-bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:14px;padding:14px 1.5rem;background:#fff;border-bottom:1.5px solid #eee}
+.map-back-btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:8px 14px;border-radius:2px;border:1.5px solid rgba(204,0,0,.35);color:#cc0000;background:#fff;cursor:pointer;transition:all .14s;white-space:nowrap;flex-shrink:0}
+.map-back-btn:hover{background:rgba(204,0,0,.08);border-color:#cc0000}
+.map-screen-title{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;color:#111;letter-spacing:.03em;text-transform:uppercase}
+.map-screen-body{padding:1.5rem}
 </style>
 </head>
 <body>
@@ -145,7 +168,7 @@ body{font-family:'Barlow',sans-serif;background:#fff;color:#111}
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <div class="hero-logo-row">
-      <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAcAB4DASIAAhEBAxEB/8QAGAABAQEBAQAAAAAAAAAAAAAACAYHCQX/xAAtEAABAwIEAwcFAQAAAAAAAAACAQMEBQYABxESCCFiExQiMTJRUglBYXKyFf/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwAcxY78uQEaO0TrzhbQAE5kuFLbWRUOxsnkvXMCnMu1aZMhizBeHUY7RPgRb+ogEh0+27Gi8I/DxHtpmPfF5R+2rDrYuQYh+iMJc95J8/L9cUXHhU+4ZS09gTRvt6wwRL0ju3f1gDZxUZBTstqk5X6A09LtWUfhJOZQy+B9PsWD/jrzBj0+6bHhNVOM1MhVGA0TrTg6i4Jgi4AvE7kDUsu69/o26Dsy3576pH8Sb4xLqXZF5ctNdF/C4DQuEXiK7iUKw72kr3NU7KBUDLkx7AfT/P6+n3PqQT9bXtOC054XJTr3JeRDswJQIg0MSUSFeSpiqu6+bkuqhUelV2eUuPRQcahqSeNAXbyJfvppy9sB0ZsO+aJb/D1b9212c2xAYpTWp7tVPaO0UT5Eu3AR4gs569mlc/e97sKkRiUYMQD9CfIupcSVx3vcletij2zUJ5LSKOxsiRgTaCdRe6/nEpgP/9k=" style="height:44px;width:auto;filter:drop-shadow(0 0 1px rgba(255,255,255,0.3))" alt="International logo">
+      <img src="data:image/png;base64,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" style="height:44px;width:auto" alt="International logo">
       <div class="logo-text">International</div>
     </div>
     <div class="hero-title">ERP Supply Chain<br>Parameter Timeline</div>
@@ -286,17 +309,12 @@ body{font-family:'Barlow',sans-serif;background:#fff;color:#111}
 
   <div class="sdiv"></div>
 
-  <div class="map-sec">
-    <p class="gloss-title">TL Transit Time to Escobedo Assembly Plant (EAP)</p>
-    <div class="map-head">
-      <p class="map-intro">Average truckload transit time from each U.S. state to <b>Escobedo Assembly Plant</b>, Gral. Escobedo, Nuevo Le&oacute;n. Mileage is a 3-point average (closest, central, furthest city) routed through the <b>Laredo, TX</b> crossing, applying <b>500 miles = 1 day</b> plus <b>1 day for the border crossing</b>. Hover a state for detail.</p>
-      <div class="map-legend" id="mapLegend"></div>
+  <div class="map-teaser" onclick="openMapScreen()">
+    <div class="map-teaser-text">
+      <p class="gloss-title">TL Transit Time to Escobedo Assembly Plant (EAP)</p>
+      <p class="map-teaser-desc">Average truckload transit time from each U.S. state to <b style="color:#111">Escobedo Assembly Plant</b>, routed through the Laredo, TX crossing. Open the interactive map to explore transit days by state.</p>
     </div>
-    <div class="map-wrap">
-      <svg class="map-svg" id="tlMap" viewBox="0 0 1000 660" xmlns="http://www.w3.org/2000/svg"></svg>
-      <div class="map-tip" id="mapTip"></div>
-    </div>
-    <p class="map-note">Days shown include <b>transportation time and border crossing only</b> &mdash; they exclude warehousing, kitting, sequencing, and line-feeding buffer. Add those to determine total Safety Time.</p>
+    <button class="map-teaser-btn" onclick="event.stopPropagation();openMapScreen()">Open Transit Map →</button>
   </div>
 
   <div class="sdiv"></div>
@@ -307,7 +325,41 @@ body{font-family:'Barlow',sans-serif;background:#fff;color:#111}
   </div>
 </div>
 
+<!-- ── SECOND SCREEN: EAP Transit Map (hidden by default, opened via the two map buttons) ── -->
+<div class="map-screen" id="mapScreen">
+  <div class="map-screen-bar">
+    <button class="map-back-btn" onclick="closeMapScreen()">← Back to Timeline</button>
+    <div class="map-screen-title">EAP Transit Time Map</div>
+  </div>
+  <div class="map-screen-body">
+    <div class="map-sec">
+      <p class="gloss-title">TL Transit Time to Escobedo Assembly Plant (EAP)</p>
+      <div class="map-head">
+        <p class="map-intro">Average truckload transit time from each U.S. state to <b>Escobedo Assembly Plant</b>, Gral. Escobedo, Nuevo Le&oacute;n. Mileage is a 3-point average (closest, central, furthest city) routed through the <b>Laredo, TX</b> crossing, applying <b>500 miles = 1 day</b> plus <b>1 day for the border crossing</b>. Hover a state for detail.</p>
+        <div class="map-legend" id="mapLegend"></div>
+      </div>
+      <div class="map-wrap">
+        <svg class="map-svg" id="tlMap" viewBox="0 0 1000 660" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="map-tip" id="mapTip"></div>
+      </div>
+      <p class="map-note">Days shown include <b>transportation time and border crossing only</b> &mdash; they exclude warehousing, kitting, sequencing, and line-feeding buffer. Add those to determine total Safety Time.</p>
+    </div>
+  </div>
+</div>
+
 <script>
+function openMapScreen(){
+  document.getElementById('mapScreen').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.getElementById('mapScreen').scrollTop=0;
+}
+function closeMapScreen(){
+  document.getElementById('mapScreen').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape') closeMapScreen();
+});
 const PARAMS={
   signal_code:{name:'Signal Code',type:'impact',stage:'edi',owner:'Purchasing',
     desc:'Controls how a part moves through the organization. Acts as a rule or tag that determines how a part is routed and processed across the company. The ERP uses Signal Codes to trigger routing, EDI demand, and automated workflows. Signal Codes (PUR / PLN) can stop EDI orders from being sent and cause supply gaps or production delays.',
